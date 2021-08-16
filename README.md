@@ -1,1 +1,5 @@
 # Dendrite_Growth_Model
+
+Abstract:
+
+Morphological computational modeling is a useful method to investigate neuronal developmental process and correlation between structure and function. It has been observed that the branching and terminating events are Poisson process in special length region. We assume a dendrites growth model with linear growth and decay. However, there is dynamic instability in the model. To estimate the stochastic behavior of chemical master equation, we used probability generating function to get the analytical dynamic mean and variance with exponential term. Evaluating the parameters from statistic measure of dendrite, we show that probability of branching and terminating are continuous changing and dividing into two stages. The early stage is unstable and results in the high diversity of dendrites growth. The later stage is stable and leads into the good control growth after the switch. Our model successfully captures the trend of neural growth pattern. We will examine that our method is useful to investigate growth pattern in other neuron type.
