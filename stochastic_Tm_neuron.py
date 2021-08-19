@@ -10,10 +10,23 @@ import matplotlib.pyplot as plt
 import neuronclass as nc
 import time
 """ import all files in data folder"""
-from os import walk
-from os.path import join
+import os 
 import fnmatch
 import pandas as pd
+
+#%% create save folder
+path = 'D:/Yu-Chuan/ForYuChuan/python program/dedritic growth model/'
+folder = 'meanTrajectory/' 
+f_dir = path + folder 
+
+try:
+    os.makedirs(f_dir)
+except FileExistsError:
+    print("The directory has been created on %s" % f_dir)      
+except OSError:
+    print ("Creation of the directory %s failed" % f_dir)  
+else:
+    print ("Successfully created the directory %s" % f_dir)
 
 #%% 
 global n0, v0, kb, kt, diffk, sumk
@@ -33,8 +46,8 @@ for T, key in enumerate(neuron_type):
         neuron2stage = nc.Neuron_two_Tm9_movemean
     elif key == 'Tm20':
         neuron2stage = nc.Neuron_two_Tm20_movemean
-      
-    n0 = 3 # first assuption
+    
+    n0 = 10 # first assuption
     neuron = neuron2stage(n0)
     neuron.nrtraj()  
     
@@ -44,16 +57,16 @@ for T, key in enumerate(neuron_type):
     dendrite = neuron.dendrite
 
     workingFolder = 'Working_' + str(neuronType).capitalize()
-    dataPath = ['D:/Yu-Chuan/MATLAB/' + workingFolder+ '/figure/NewKbAndKt/numberChange/AtRisk/Excel/' + \
+    dataPath = ['D:/Yu-Chuan/' + workingFolder+ '/figure/NewKbAndKt/numberChange/AtRisk/Excel/' + \
                 str(labname)]
       
     dataName = '*' + str(neuronType) + '_' + str(labname) + '_' + str(neuronName) + '_' + dendrite + '*.csv'
 
     for path in dataPath:
-        for root, dires, files in walk(path):
+        for root, dires, files in os.walk(path):
             for f in files: 
                 if fnmatch.fnmatch( f, dataName):
-                    fullpath = join(root, f)
+                    fullpath = os.path.join(root, f)
                     neuronPath.append(fullpath)
                
     #%% experiment data (pandas datafram)
@@ -62,6 +75,7 @@ for T, key in enumerate(neuron_type):
 
     n0 = int(numberChange_exp['number'].head(1))
     neuron.n0 = n0
+    
     ### Steps setting
     nclass = 1 # to get the group of neuron 
     nsample = 500
@@ -93,7 +107,7 @@ for T, key in enumerate(neuron_type):
 
     #time start
     start = time.time()
-    for group in range(nclass):
+    for group in range(1):
     
         n_collect_1sum = np.zeros(num_collect_data)
         n_collect_2sum = np.zeros(num_collect_data)
@@ -106,7 +120,7 @@ for T, key in enumerate(neuron_type):
         print('group = '+ str(group))
         
         for isample in range(nsample):      
-            print('isample = '+ str(isample))
+            #print('isample = '+ str(isample))
             
             rmax = neuron.tmax
             r_collect=np.linspace(0,rmax,num_collect_data) 
@@ -159,13 +173,13 @@ for T, key in enumerate(neuron_type):
         
         #Calculate the time of one process
         end1 = time.time()
-        print(end1-start1)  
+        #print(end1-start1)  
     # end nclass 
     allClassOfBr.append(all_group_Br)
     allClassOfTe.append(all_group_Te)
     #Calculate the time of multiprocess   
     end = time.time()
-    print(end - start)
+    #print(end - start)
     
     n_collect_mean = n_collect_1sum/nsample
     n_collect_std=np.sqrt(n_collect_2sum/nsample-np.multiply(n_collect_mean, n_collect_mean))
@@ -176,16 +190,6 @@ for T, key in enumerate(neuron_type):
     plt.setp(f2, 'color', '#000000', 'linewidth', 1.0)
     plt.xlabel("length of dendrite segments")
     plt.ylabel("number of dendrites")
-    #plt.xlim(0, 300)
-    #plt.ylim(0, 100)
-    plt.show()
-    
-    f1=plt.plot(r_collect,n_collect_mean,'-')
-    plt.setp(f1, 'color', '#000000', 'linewidth', 2.0)
-    f2=plt.plot(r_collect,n_collect_mean+n_collect_std, '-.',r_collect, n_collect_mean-n_collect_std, '-.')
-    plt.setp(f2, 'color', '#000000', 'linewidth', 1.0)
-    plt.xlabel("length of dendrite segments")
-    plt.ylabel("number of dendrites")
-    #plt.xlim(0, rmax)
-    #plt.ylim(0, 100)
-    plt.show()
+    plt.xlim(0, 100)
+    savename = neuronType + '_' + labname + '_' + str(key) + '.png'
+    plt.savefig(f_dir + savename, dpi= 1500)
