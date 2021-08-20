@@ -161,7 +161,7 @@ def movingMeanParam(probability, neuronType, labname, neuronName, dendrite):
         for root, dires, files in os.walk(path):
             for f in files: 
                 if fnmatch.fnmatch( f, dataName):
-                    fullpath = os.join(root, f)
+                    fullpath = os.path.join(root, f)
                     neuronPath.append(fullpath)
 
     if str(probability) == 'KB':
